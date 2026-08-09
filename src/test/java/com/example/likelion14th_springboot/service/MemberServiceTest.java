@@ -46,6 +46,7 @@ public class MemberServiceTest {
                     .address("서울시 테스트동 " + i + "번지")
                     .phoneNumber("010-1234-56" + String.format("%02d", i))
                     .deposit(1000 * i)
+                    .age(i+5) // 6~35세
                     .isAdmin(false)
                     .role(Role.BUYER)
                     .build();
@@ -91,6 +92,27 @@ public class MemberServiceTest {
         assertThat(page.getTotalElements()).isEqualTo(30);
         assertThat(page.getTotalPages()).isEqualTo(3);
         assertThat(page.getContent().get(0).getName()).isEqualTo("user30");
+    }
+
+    @Test
+    @DisplayName("성인 회원을 이름 오름차순으로 페이징 조회한다.")
+    void testGetAdultMembersSortedByName() {
+        Page<Member> page = memberService.getAdultMembersSortedByName(0, 10);
+
+        assertThat(page.getTotalElements()).isEqualTo(16); // 20세 이상 인원 수
+        assertThat(page.getContent()).hasSize(10);
+        // 이름 오름차순이면 "user15"가 문자열 사전순으로 가장 앞
+        assertThat(page.getContent().get(0).getName()).isEqualTo("user15");
+    }
+
+    @Test
+    @DisplayName("이름이 특정 값으로 시작하는 회원을 조회한다.")
+    void testGetMembersByNamePrefix() {
+        List<Member> result = memberService.getMembersByNamePrefix("user1");
+
+        // "user1", "user10"~"user19" → 총 11명
+        assertThat(result).hasSize(11);
+        assertThat(result).allMatch(m -> m.getName().startsWith("user1"));
     }
 }
 
