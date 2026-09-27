@@ -31,8 +31,20 @@ public class Orders extends BaseTimeEntity {
     @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL)
     private List<ProductOrders> productOrders;
 
-
-
     @OneToOne(mappedBy = "orders", cascade = CascadeType.ALL)
     private Coupon coupon;
+
+    @Embedded
+    private ShippingAddress shippingAddress;
+
+    @Builder.Default
+    private Boolean deleted = false;
+
+    public void updateShippingAddress(ShippingAddress shippingAddress) {
+        this.shippingAddress = shippingAddress;
+    }
+
+    public void softDelete() {
+        this.deleted = true;
+    }
 }
