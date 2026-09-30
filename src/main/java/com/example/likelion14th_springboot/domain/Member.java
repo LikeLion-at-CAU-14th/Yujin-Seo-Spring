@@ -14,6 +14,7 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String password;
     private String name;
     private String address;
     private String email;
@@ -21,7 +22,7 @@ public class Member {
     private Integer age;
 
     @Builder
-    public Member(String name, String address, String email, String phoneNumber, Integer age, Role role, Boolean isAdmin, Integer deposit){
+    public Member(String name, String address, String email, String phoneNumber, Integer age, Role role, Boolean isAdmin, Integer deposit, String password) {
         this.name = name;
         this.address = address;
         this.email = email;
@@ -30,6 +31,7 @@ public class Member {
         this.isAdmin = isAdmin;
         this.deposit = deposit;
         this.age = age;
+        this.password = password;
     }
 
     @Enumerated(EnumType.STRING)

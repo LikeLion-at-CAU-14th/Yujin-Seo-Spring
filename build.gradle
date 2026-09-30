@@ -33,6 +33,9 @@ dependencies {
 
 	//jpa 쿼리파라미터 확인
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:2.0.1'
+
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
 }
 
 tasks.named('test') {
