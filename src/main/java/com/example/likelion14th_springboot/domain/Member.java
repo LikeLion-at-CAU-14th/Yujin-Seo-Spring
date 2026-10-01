@@ -2,9 +2,7 @@ package com.example.likelion14th_springboot.domain;
 
 import com.example.likelion14th_springboot.enums.Role;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.*;
 
@@ -12,7 +10,6 @@ import java.util.*;
 @Getter
 @NoArgsConstructor
 public class Member {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,6 +19,18 @@ public class Member {
     private String email;
     private String phoneNumber;
     private Integer age;
+
+    @Builder
+    public Member(String name, String address, String email, String phoneNumber, Integer age, Role role, Boolean isAdmin, Integer deposit){
+        this.name = name;
+        this.address = address;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+        this.isAdmin = isAdmin;
+        this.deposit = deposit;
+        this.age = age;
+    }
 
     @Enumerated(EnumType.STRING)
     private Role role; // 판매자면 SELLER, 구매자면 BUYER
@@ -40,17 +49,9 @@ public class Member {
         this.deposit -= money;
     }
 
-    @Builder
-    public Member(String name, String address, String email, String phoneNumber,
-                  Role role, Boolean isAdmin, Integer deposit, Integer age) {
-        this.name = name;
-        this.address = address;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.role = role;
-        this.isAdmin = isAdmin;
-        this.deposit = deposit;
-        this.age = age;
+    //추가
+    public boolean isSeller() {
+        return Role.SELLER.equals(this.role);
     }
 }
 
