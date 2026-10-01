@@ -1,5 +1,4 @@
 package com.example.likelion14th_springboot.repository;
-
 import com.example.likelion14th_springboot.domain.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
