@@ -17,12 +17,15 @@ import org.springframework.web.cors.CorsConfiguration;
 import java.util.Arrays;
 import java.util.Collections;
 
+import com.example.likelion14th_springboot.service.CustomOAuth2UserService;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService; // UserDetailsService DI. 의존성 주입
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -31,10 +34,18 @@ public class SecurityConfig {
                 .cors((SecurityConfig::corsAllow)) // CORS 설정
                 .csrf(AbstractHttpConfigurer::disable) // 비활성화
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/join", "/login").permitAll() // 회원가입, 로그인은 모두 허용
-                        .requestMatchers("/**").authenticated()) // 나머지는 인증된 사용자만 허용
-                .formLogin(Customizer.withDefaults())
-                .logout(Customizer.withDefaults())
+                  .requestMatchers("/join", "/login",
+                          "/oauth2/**", "/login/oauth2/**",
+                          "/h2-console/**", "/error").permitAll()
+                  .anyRequest().authenticated())
+//                    .requestMatchers("/**").authenticated()) // 인증된 사용자만 허용
+                  .oauth2Login(oauth -> oauth
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)
+                        )
+                )
+//              .formLogin(Customizer.withDefaults())
+//              .logout(Customizer.withDefaults())
                 .userDetailsService(customUserDetailsService)
         ;
         return http.build();
