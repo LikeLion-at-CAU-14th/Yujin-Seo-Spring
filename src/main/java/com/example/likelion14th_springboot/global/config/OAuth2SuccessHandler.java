@@ -1,6 +1,8 @@
 package com.example.likelion14th_springboot.global.config;
 
+import com.example.likelion14th_springboot.domain.Member;
 import com.example.likelion14th_springboot.jwt.JwtTokenProvider;
+import com.example.likelion14th_springboot.repository.MemberRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,6 +22,7 @@ import java.io.IOException;
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
 
     @Override
     public void onAuthenticationSuccess(
@@ -32,8 +35,10 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         String email = oAuth2User.getAttribute("email");
 
-        // 아래 메서드 이름은 현재 JwtTokenProvider 구현에 맞춰야 함
-        String accessToken = jwtTokenProvider.generateAccessToken(email);
+        // email로 우리 서비스의 회원을 찾고, 토큰에는 일반 로그인과 같이 name을 넣는다
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+        String accessToken = jwtTokenProvider.generateAccessToken(member.getName());
 
         String redirectUrl = UriComponentsBuilder
                 .fromUriString("http://localhost:8080/oauth2/success") //프론트와 협업이라면 프론트 주소를 넣어줘야함.
